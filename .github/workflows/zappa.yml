@@ -1,0 +1,85 @@
+name: "Zappa"
+
+on:
+  push:
+    branches: ["main"]
+    tags: ["*"]
+  pull_request:
+
+env:
+  AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+  AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+
+permissions:
+  contents: read
+
+jobs:
+  zappa-staging:
+    name: "Zappa Staging"
+    runs-on: ubuntu-latest
+    environment: staging
+    if: github.ref == 'refs/heads/main'
+
+    defaults:
+      run:
+        shell: bash
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Setup Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: 3.9
+
+      - name: Prepare zappa setup
+        run: |
+          curl -sSL https://install.python-poetry.org | python3 -
+          poetry install --no-dev --no-root
+          mv awslambda-psycopg2 psycopg2
+          cp zappa_settings.template.json zappa_settings.json
+          echo $(jq '.ENVIRONMENT.s3_bucket = "${{ secrets.S3_BUCKET }}"' zappa_settings.json) > zappa_settings.json
+          echo $(jq '.ENVIRONMENT.aws_environment_variables.DATABASE_URI = "${{ secrets.DATABASE_URI }}"' zappa_settings.json) > zappa_settings.json
+          echo $(jq '.ENVIRONMENT.vpc_config.SubnetIds = [${{ secrets.SUBNET_IDS }}]' zappa_settings.json) > zappa_settings.json
+          echo $(jq '.ENVIRONMENT.vpc_config.SecurityGroupIds = [${{ secrets.SECURITY_GROUP_IDS }}]' zappa_settings.json) > zappa_settings.json
+          echo $(jq 'with_entries(if .key == "ENVIRONMENT" then .key = "staging" else . end)' zappa_settings.json) > zappa_settings.json
+          poetry run zappa update staging || poetry run zappa deploy staging
+
+      - name: Run migrations
+        run: poetry run zappa invoke staging lightsoff-api.commands.upgrade
+
+  zappa-production:
+    name: "Zappa Production"
+    runs-on: ubuntu-latest
+    environment: production
+    if: contains(github.ref, 'refs/tags/')
+
+    defaults:
+      run:
+        shell: bash
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Setup Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: 3.9
+
+      - name: Zappa deploy
+        run: |
+          curl -sSL https://install.python-poetry.org | python3 -
+          poetry install --no-dev --no-root
+          mv awslambda-psycopg2 psycopg2
+          cp zappa_settings.template.json zappa_settings.json
+          echo $(jq '.ENVIRONMENT.s3_bucket = "${{ secrets.S3_BUCKET }}"' zappa_settings.json) > zappa_settings.json
+          echo $(jq '.ENVIRONMENT.aws_environment_variables.DATABASE_URI = "${{ secrets.DATABASE_URI }}"' zappa_settings.json) > zappa_settings.json
+          echo $(jq '.ENVIRONMENT.vpc_config.SubnetIds = [${{ secrets.SUBNET_IDS }}]' zappa_settings.json) > zappa_settings.json
+          echo $(jq '.ENVIRONMENT.vpc_config.SecurityGroupIds = [${{ secrets.SECURITY_GROUP_IDS }}]' zappa_settings.json) > zappa_settings.json
+          echo $(jq 'with_entries(if .key == "ENVIRONMENT" then .key = "production" else . end)' zappa_settings.json) > zappa_settings.json
+          poetry run zappa update production || poetry run zappa deploy production
+
+      - name: Run migrations
+        run: poetry run zappa invoke production lightsoff-api.commands.upgrade
