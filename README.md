@@ -9,9 +9,3 @@
 - Replace environment variables with yours
 - Run migrations `flask db upgrade`
 - Launch the app `flask run`
-
-# Notes about psycopg2
-
-The `awslambda-psycopg2` directory contains the code from [here](`https://github.com/jkehler/awslambda-psycopg2`)
-ans is required in order to allow communication between postgresql database and
-a lambda.
