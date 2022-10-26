@@ -17,13 +17,24 @@ migrate = Migrate(app, db)
 
 
 class Place(db.Model):
-    google_place_id = sa.Column(
-        sa.Integer, unique=True, primary_key=True, autoincrement=False
-    )
+    google_place_id = sa.Column(sa.Integer, primary_key=True, autoincrement=False)
     name = sa.Column(sa.Text, nullable=False)
     google_place_url = sa.Column(sa.Text)
     address = sa.Column(sa.Text, nullable=False)
     phone_number = sa.Column(sa.String(length=15))
+
+
+class PlaceReview(db.Model):
+    id = sa.Column(sa.Integer, primary_key=True)
+    google_place_id = sa.Column(
+        sa.Integer,
+        sa.ForeignKey("place.google_place_id", name="place_review_place_fkey"),
+        nullable=False,
+    )
+    created_at = sa.Column(sa.DateTime, nullable=False)
+    completed_at = sa.Column(sa.DateTime)
+    type = sa.Column(sa.String(50))
+    do_it_for_me = sa.Column(sa.Boolean, default=False)
 
 
 class PlaceBody(BaseModel):
