@@ -12,7 +12,7 @@ from http import HTTPStatus
 app = OpenAPI(__name__)
 app.config["SQLALCHEMY_DATABASE_URI"] = os.environ.get("DATABASE_URI")
 
-CORS(app, origins=os.environ.get("CORS_ALLOWED_ORIGINS"))
+CORS(app, origins=os.environ.get("CORS_ALLOWED_ORIGINS", "").split(","))
 db = SQLAlchemy(app)
 migrate = Migrate(app, db)
 
