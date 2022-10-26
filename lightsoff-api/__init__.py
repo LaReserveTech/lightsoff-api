@@ -1,5 +1,6 @@
 import os
 import sqlalchemy as sa
+import datetime
 from typing import Optional
 from flask_openapi3 import OpenAPI
 from flask_sqlalchemy import SQLAlchemy
@@ -37,6 +38,10 @@ class PlaceReview(db.Model):
     do_it_for_me = sa.Column(sa.Boolean, default=False)
 
 
+class PlacePath(BaseModel):
+    google_place_id: int
+
+
 class PlaceBody(BaseModel):
     google_place_id: int
     name: str
@@ -51,7 +56,6 @@ class PlaceBody(BaseModel):
 class PlaceResponse(BaseModel):
     code: int = Field(0, description="Status Code")
     message: str = Field("ok", description="Exception Information")
-    data: Optional[PlaceBody]
 
 
 @app.post("/places", responses={"200": PlaceResponse})
@@ -68,7 +72,52 @@ def create_place(body: PlaceBody):
         db.session.commit()
 
     return {
-        "message": "ok",
+        "code": HTTPStatus.OK.value,
+        "message": HTTPStatus.OK.description,
+    }, HTTPStatus.OK
+
+
+class PlaceReviewBody(BaseModel):
+    type: Optional[str]
+    do_it_for_me: Optional[bool]
+
+    class Config:
+        orm_mode = True
+
+
+class PlaceReviewResponse(BaseModel):
+    code: int = Field(0, description="Status Code")
+    message: str = Field("ok", description="Exception Information")
+
+
+@app.post(
+    "/places/<int:google_place_id>/reviews", responses={"200": PlaceReviewResponse}
+)
+def create_place_review(path: PlacePath, body: PlaceReviewBody):
+    place = (
+        db.session.query(Place)
+        .filter(Place.google_place_id == path.google_place_id)
+        .first()
+    )
+
+    if not place:
+        return {
+            "code": HTTPStatus.NOT_FOUND.value,
+            "message": HTTPStatus.NOT_FOUND.description,
+        }, HTTPStatus.NOT_FOUND
+
+    place_review = PlaceReview(
+        google_place_id=place.google_place_id,
+        created_at=datetime.datetime.utcnow(),
+        completed_at=datetime.datetime.utcnow() if not body.do_it_for_me else None,
+        **body.dict(),
+    )
+    db.session.add(place_review)
+    db.session.commit()
+
+    return {
+        "code": HTTPStatus.OK.value,
+        "message": HTTPStatus.OK.description,
     }, HTTPStatus.OK
 
 
