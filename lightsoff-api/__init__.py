@@ -1,16 +1,17 @@
 import os
-import json
 import sqlalchemy as sa
 from typing import Optional
 from flask_openapi3 import OpenAPI
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
+from flask_cors import CORS
 from pydantic import BaseModel, Field
 from http import HTTPStatus
 
 app = OpenAPI(__name__)
 app.config["SQLALCHEMY_DATABASE_URI"] = os.environ.get("DATABASE_URI")
 
+CORS(app, origins=os.environ.get("CORS_ALLOWED_ORIGINS"))
 db = SQLAlchemy(app)
 migrate = Migrate(app, db)
 

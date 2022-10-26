@@ -13,6 +13,7 @@ flask-openapi3 = "2.1.1"
 flask-sqlalchemy = "3.0.2"
 zappa = "0.55.0"
 psycopg2-binary = "2.9.5"
+Flask-Cors = "3.0.10"
 
 [tool.poetry.dev-dependencies]
 black = "22.10.0"

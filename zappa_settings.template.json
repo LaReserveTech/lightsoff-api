@@ -1,18 +1,18 @@
 {
-    "ENVIRONMENT": {
-        "app_function": "lightsoff-api.__init__.app",
-        "aws_region": "eu-west-3",
-        "project_name": "lightsoff-api",
-        "runtime": "python3.9",
-        "s3_bucket": "",
-        "aws_environment_variables": {
-            "DATABASE_URI": ""
-        },
-        "vpc_config": {
-            "SubnetIds": [],
-            "SecurityGroupIds": []
-        },
-        "touch_path": "/openapi",
-        "cors": {}
-    }
+  "ENVIRONMENT": {
+    "app_function": "lightsoff-api.__init__.app",
+    "aws_region": "eu-west-3",
+    "project_name": "lightsoff-api",
+    "runtime": "python3.9",
+    "s3_bucket": "",
+    "aws_environment_variables": {
+      "DATABASE_URI": "",
+      "CORS_ALLOWED_ORIGINS": ""
+    },
+    "vpc_config": {
+      "SubnetIds": [],
+      "SecurityGroupIds": []
+    },
+    "touch_path": "/openapi"
+  }
 }
