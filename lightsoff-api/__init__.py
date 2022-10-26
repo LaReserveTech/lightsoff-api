@@ -55,8 +55,12 @@ class PlaceResponse(BaseModel):
 
 
 @app.post("/places", responses={"200": PlaceResponse})
-def create_places(body: PlaceBody):
-    place = db.session.query(Place).first()
+def create_place(body: PlaceBody):
+    place = (
+        db.session.query(Place)
+        .filter(Place.google_place_id == body.google_place_id)
+        .first()
+    )
 
     if not place:
         place = Place(**body.dict())
