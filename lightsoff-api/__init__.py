@@ -18,17 +18,18 @@ migrate = Migrate(app, db)
 
 
 class Place(db.Model):
-    google_place_id = sa.Column(sa.Integer, primary_key=True, autoincrement=False)
+    google_place_id = sa.Column(sa.Text, primary_key=True, autoincrement=False)
     name = sa.Column(sa.Text, nullable=False)
-    google_place_url = sa.Column(sa.Text)
+    created_at = sa.Column(sa.DateTime, nullable=False)
     address = sa.Column(sa.Text, nullable=False)
+    google_place_url = sa.Column(sa.Text)
     phone_number = sa.Column(sa.String(length=15))
 
 
 class PlaceReview(db.Model):
     id = sa.Column(sa.Integer, primary_key=True)
     google_place_id = sa.Column(
-        sa.Integer,
+        sa.Text,
         sa.ForeignKey("place.google_place_id", name="place_review_place_fkey"),
         nullable=False,
     )
@@ -39,11 +40,11 @@ class PlaceReview(db.Model):
 
 
 class PlacePath(BaseModel):
-    google_place_id: int
+    google_place_id: str
 
 
 class PlaceBody(BaseModel):
-    google_place_id: int
+    google_place_id: str
     name: str
     google_place_url: str
     address: str
@@ -67,7 +68,7 @@ def create_place(body: PlaceBody):
     )
 
     if not place:
-        place = Place(**body.dict())
+        place = Place(created_at=datetime.datetime.utcnow(), **body.dict())
         db.session.add(place)
         db.session.commit()
 
@@ -91,7 +92,7 @@ class PlaceReviewResponse(BaseModel):
 
 
 @app.post(
-    "/places/<int:google_place_id>/reviews", responses={"200": PlaceReviewResponse}
+    "/places/<string:google_place_id>/reviews", responses={"200": PlaceReviewResponse}
 )
 def create_place_review(path: PlacePath, body: PlaceReviewBody):
     place = (
