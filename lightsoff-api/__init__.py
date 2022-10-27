@@ -24,6 +24,7 @@ class Place(db.Model):
     address = sa.Column(sa.Text, nullable=False)
     google_place_url = sa.Column(sa.Text)
     phone_number = sa.Column(sa.String(length=15))
+    report_count = sa.Column(sa.Integer, nullable=False, default=1)
 
 
 class PlaceReview(db.Model):
@@ -68,9 +69,11 @@ def create_place(body: PlaceBody):
     )
 
     if not place:
-        place = Place(created_at=datetime.datetime.utcnow(), **body.dict())
-        db.session.add(place)
-        db.session.commit()
+        db.session.add(Place(created_at=datetime.datetime.utcnow(), **body.dict()))
+    else:
+        place.report_count += 1
+
+    db.session.commit()
 
     return {
         "code": HTTPStatus.OK.value,
