@@ -33,7 +33,7 @@ jobs:
         with:
           python-version: 3.9
 
-      - name: Prepare zappa setup
+      - name: Zappa deploy
         run: |
           curl -sSL https://install.python-poetry.org | python3 -
           poetry install --no-dev --no-root
@@ -72,7 +72,6 @@ jobs:
         run: |
           curl -sSL https://install.python-poetry.org | python3 -
           poetry install --no-dev --no-root
-          mv awslambda-psycopg2 psycopg2
           cp zappa_settings.template.json zappa_settings.json
           echo $(jq '.ENVIRONMENT.s3_bucket = "${{ secrets.S3_BUCKET }}"' zappa_settings.json) > zappa_settings.json
           echo $(jq '.ENVIRONMENT.aws_environment_variables.DATABASE_URI = "${{ secrets.DATABASE_URI }}"' zappa_settings.json) > zappa_settings.json
