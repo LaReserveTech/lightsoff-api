@@ -1,13 +1,15 @@
+import datetime
 import os
 import sqlalchemy as sa
-import datetime
-from typing import Optional
+
+from enum import Enum
+from flask_cors import CORS
+from flask_migrate import Migrate
 from flask_openapi3 import OpenAPI
 from flask_sqlalchemy import SQLAlchemy
-from flask_migrate import Migrate
-from flask_cors import CORS
-from pydantic import BaseModel, Field
 from http import HTTPStatus
+from pydantic import BaseModel, Field, root_validator
+from typing import Optional
 
 app = OpenAPI(__name__)
 app.config["SQLALCHEMY_DATABASE_URI"] = os.environ.get("DATABASE_URI")
@@ -83,12 +85,34 @@ def create_place(body: PlaceBody):
     }, HTTPStatus.OK
 
 
+class PlaceReviewType(str, Enum):
+    GOOGLE_REVIEW = "GOOGLE_REVIEW"
+    PHONE_CALL = "PHONE_CALL"
+    TWILIO = "TWILIO"
+
+
 class PlaceReviewBody(BaseModel):
-    type: Optional[str]
+    type: Optional[PlaceReviewType]
     do_it_for_me: Optional[bool]
 
     class Config:
         orm_mode = True
+
+    @root_validator
+    def consistency_check(cls, values):
+        if values["do_it_for_me"] is None and not values["type"]:
+            raise ValueError("type or do_it_for_me fields should not be null")
+
+        if values["do_it_for_me"] and values["type"]:
+            raise ValueError("type or do_it_for_me fields should be null")
+
+        if not values["do_it_for_me"] and "type" in values and not values["type"]:
+            raise ValueError("type field should not be null")
+
+        if values.get("type"):
+            values["type"] = values["type"].value
+
+        return values
 
 
 class PlaceReviewResponse(BaseModel):
