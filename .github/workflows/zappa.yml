@@ -14,11 +14,35 @@ permissions:
   contents: read
 
 jobs:
+  tests:
+    name: "Tests"
+    runs-on: ubuntu-latest
+
+    defaults:
+      run:
+        shell: bash
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Setup Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: 3.9
+
+      - name: Run tests
+        run: |
+          curl -sSL https://install.python-poetry.org | python3 -
+          poetry install
+          poetry run pytest
+
   zappa-staging:
     name: "Zappa Staging"
     runs-on: ubuntu-latest
     environment: staging
     if: github.ref == 'refs/heads/main'
+    needs: [tests]
 
     defaults:
       run:
@@ -54,6 +78,7 @@ jobs:
     runs-on: ubuntu-latest
     environment: production
     if: contains(github.ref, 'refs/tags/')
+    needs: [tests]
 
     defaults:
       run:
