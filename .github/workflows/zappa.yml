@@ -47,7 +47,7 @@ jobs:
           poetry run zappa update staging || poetry run zappa deploy staging
 
       - name: Run migrations
-        run: poetry run zappa invoke staging lightsoff-api.commands.upgrade
+        run: poetry run zappa invoke staging lightsoff_api.commands.upgrade
 
   zappa-production:
     name: "Zappa Production"
@@ -82,4 +82,4 @@ jobs:
           poetry run zappa update production || poetry run zappa deploy production
 
       - name: Run migrations
-        run: poetry run zappa invoke production lightsoff-api.commands.upgrade
+        run: poetry run zappa invoke production lightsoff_api.commands.upgrade

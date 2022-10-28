@@ -20,7 +20,9 @@ migrate = Migrate(app, db)
 class Place(db.Model):
     google_place_id = sa.Column(sa.Text, primary_key=True, autoincrement=False)
     name = sa.Column(sa.Text, nullable=False)
-    created_at = sa.Column(sa.DateTime, nullable=False)
+    created_at = sa.Column(
+        sa.DateTime, nullable=False, default=lambda: datetime.datetime.utcnow()
+    )
     address = sa.Column(sa.Text, nullable=False)
     google_place_url = sa.Column(sa.Text)
     phone_number = sa.Column(sa.String(length=15))
@@ -69,7 +71,7 @@ def create_place(body: PlaceBody):
     )
 
     if not place:
-        db.session.add(Place(created_at=datetime.datetime.utcnow(), **body.dict()))
+        db.session.add(Place(**body.dict()))
     else:
         place.report_count += 1
 

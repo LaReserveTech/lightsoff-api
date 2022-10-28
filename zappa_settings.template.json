@@ -1,6 +1,6 @@
 {
   "ENVIRONMENT": {
-    "app_function": "lightsoff-api.__init__.app",
+    "app_function": "lightsoff_api.__init__.app",
     "aws_region": "eu-west-3",
     "project_name": "lightsoff-api",
     "runtime": "python3.9",
