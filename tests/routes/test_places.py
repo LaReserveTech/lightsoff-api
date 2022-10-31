@@ -8,6 +8,8 @@ def test_post_new_place(client):
         "google_place_url": "Some URL",
         "address": "Some address",
         "phone_number": "Some number",
+        "latitude": 0.1,
+        "longitude": 0.2,
     }
 
     response = client.post(
@@ -32,6 +34,8 @@ def test_post_existing_place(client):
         "google_place_url": "Some URL",
         "address": "Some address",
         "phone_number": "Some number",
+        "latitude": 0.1,
+        "longitude": 0.2,
     }
 
     existing_place = Place(report_count=8, **place_payload)

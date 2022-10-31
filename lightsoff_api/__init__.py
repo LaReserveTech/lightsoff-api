@@ -29,6 +29,8 @@ class Place(db.Model):
     google_place_url = sa.Column(sa.Text)
     phone_number = sa.Column(sa.String(length=15))
     report_count = sa.Column(sa.Integer, nullable=False, default=1)
+    latitude = sa.Column(sa.Float, nullable=False)
+    longitude = sa.Column(sa.Float, nullable=False)
 
 
 class PlaceReview(db.Model):
@@ -54,6 +56,8 @@ class PlaceBody(BaseModel):
     google_place_url: str
     address: str
     phone_number: Optional[str]
+    latitude: float
+    longitude: float
 
     class Config:
         orm_mode = True

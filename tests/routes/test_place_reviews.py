@@ -7,6 +7,8 @@ def test_post_place_review_with_type(client):
         google_place_id="some_id",
         name="some_name",
         address="some_address",
+        latitude=0.1,
+        longitude=0.1,
     )
     db.session.add(existing_place)
 
@@ -38,6 +40,8 @@ def test_post_place_review_with_wrong_payload(client):
         google_place_id="some_id",
         name="some_name",
         address="some_address",
+        latitude=0.1,
+        longitude=0.1,
     )
     db.session.add(existing_place)
 
