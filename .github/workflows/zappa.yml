@@ -101,6 +101,7 @@ jobs:
           echo $(jq '.ENVIRONMENT.s3_bucket = "${{ secrets.S3_BUCKET }}"' zappa_settings.json) > zappa_settings.json
           echo $(jq '.ENVIRONMENT.aws_environment_variables.DATABASE_URI = "${{ secrets.DATABASE_URI }}"' zappa_settings.json) > zappa_settings.json
           echo $(jq '.ENVIRONMENT.aws_environment_variables.CORS_ALLOWED_ORIGINS = "${{ secrets.CORS_ALLOWED_ORIGINS }}"' zappa_settings.json) > zappa_settings.json
+          echo $(jq '.ENVIRONMENT.aws_environment_variables.CREATE_REVIEW_ZAPPIER_HOOK_URL = "${{ secrets.CREATE_REVIEW_ZAPPIER_HOOK_URL }}"' zappa_settings.json) > zappa_settings.json
           echo $(jq '.ENVIRONMENT.vpc_config.SubnetIds = [${{ secrets.SUBNET_IDS }}]' zappa_settings.json) > zappa_settings.json
           echo $(jq '.ENVIRONMENT.vpc_config.SecurityGroupIds = [${{ secrets.SECURITY_GROUP_IDS }}]' zappa_settings.json) > zappa_settings.json
           echo $(jq 'with_entries(if .key == "ENVIRONMENT" then .key = "production" else . end)' zappa_settings.json) > zappa_settings.json

@@ -1,8 +1,10 @@
 import datetime
 import os
 import sqlalchemy as sa
+import requests
 
 from enum import Enum
+from flask import current_app
 from flask_cors import CORS
 from flask_migrate import Migrate
 from flask_openapi3 import OpenAPI
@@ -147,7 +149,21 @@ def create_place_review(path: PlacePath, body: PlaceReviewBody):
         **body.dict(),
     )
     db.session.add(place_review)
+
+    payload = {
+        "place_name": place.name,
+        "google_place_url": place.google_place_url,
+        "place_address": place.address,
+        "review_type": place_review.type,
+    }
+
     db.session.commit()
+
+    if hook_url := os.environ.get("CREATE_REVIEW_ZAPPIER_HOOK_URL"):
+        try:
+            requests.post(hook_url, json=payload)
+        except Exception as e:
+            current_app.logger.error(e)
 
     return {
         "code": HTTPStatus.OK.value,
