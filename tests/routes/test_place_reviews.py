@@ -91,7 +91,8 @@ def test_post_place_review_with_wrong_payload(client):
     assert "value is not a valid enumeration member" in response.json[0]["msg"]
 
 
-def test_delete_place_review(client):
+def test_delete_place_review(runner):
+
     existing_place = Place(
         report_count=8,
         google_place_id="some_id",
@@ -102,8 +103,9 @@ def test_delete_place_review(client):
     )
     db.session.add(existing_place)
 
+    place_review_id_to_remove = 999
     existing_place_review = PlaceReview(
-        id=12,
+        id=place_review_id_to_remove,
         google_place_id="some_id",
         created_at=datetime.datetime.utcnow(),
         completed_at=datetime.datetime.utcnow(),
@@ -112,35 +114,12 @@ def test_delete_place_review(client):
     )
     db.session.add(existing_place_review)
 
-    delete_review_payload = {
-        "id": existing_place_review.id
-    }
-
-    response = client.delete(
-        f"/place_reviews",
-        json=delete_review_payload,
-    )
-
-    assert response.status_code == 200
+    runner.invoke(args=["delete_place_review", f"{place_review_id_to_remove}"])
 
     place_review = (
         db.session.query(PlaceReview)
-        .filter(PlaceReview.id == existing_place_review.id)
+        .filter(PlaceReview.id == place_review_id_to_remove)
         .all()
     )
 
     assert place_review == []
-
-
-def test_delete_place_review_when_the_id_does_not_exist(client):
-
-    delete_review_payload = {
-        "id": 999
-    }
-
-    response = client.delete(
-        f"/place_reviews",
-        json=delete_review_payload,
-    )
-
-    assert response.status_code == 204

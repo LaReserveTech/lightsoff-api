@@ -1,5 +1,8 @@
 import datetime
+import logging
 import os
+
+import click
 import sqlalchemy as sa
 import requests
 
@@ -171,44 +174,25 @@ def create_place_review(path: PlacePath, body: PlaceReviewBody):
     }, HTTPStatus.OK
 
 
-class PlaceReviewIdBody(BaseModel):
-    id: int
+@app.cli.command("delete_place_review")
+@click.argument("ids", nargs=-1)
+def delete_place_review(ids):
+    if len(ids) == 0:
+        logging.warning("At least on id must be specified. Usage: flask delete_place_review 1 2 3.")
 
-    class Config:
-        orm_mode = True
+    for place_review_id in ids:
+        place_review = (
+            db.session.query(PlaceReview)
+            .filter(PlaceReview.id == place_review_id)
+            .first()
+        )
 
-
-class PlaceReviewIdResponse(BaseModel):
-    code: int = Field(0, description="Status Code")
-    message: str = Field("ok", description="Exception Information")
-
-
-@app.delete(
-    "/place_reviews", responses={"200": PlaceReviewIdResponse}
-)
-def delete_place_review(body: PlaceReviewIdBody):
-
-    place_review = (
-        db.session.query(PlaceReview)
-        .filter(PlaceReview.id == body.id)
-        .first()
-    )
-
-    if not place_review:
-        return {
-            "code": HTTPStatus.NO_CONTENT.value,
-            "message": HTTPStatus.NO_CONTENT.description,
-        }, HTTPStatus.NO_CONTENT
-
-    db.session.delete(place_review)
-    db.session.commit()
-
-    # TODO : Probably that the review must also be deleted on zappier ?
-
-    return {
-        "code": HTTPStatus.OK.value,
-        "message": HTTPStatus.OK.description,
-    }, HTTPStatus.OK
+        if not place_review:
+            logging.warning(f"No place_review with id {place_review_id}.")
+        else:
+            db.session.delete(place_review)
+            db.session.commit()
+            logging.info(f"Place_review with id {place_review_id} successfully deleted.")
 
 
 if __name__ == "__main__":
