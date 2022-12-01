@@ -1,4 +1,4 @@
-from lightsoff_api import db, Place, PlaceReview, PlaceReviewType
+from lightsoff_api import db, Place, PlaceReview
 
 
 def test_post_place_review_with_type(client):
@@ -88,3 +88,58 @@ def test_post_place_review_with_wrong_payload(client):
 
     assert response.status_code == 422
     assert "value is not a valid enumeration member" in response.json[0]["msg"]
+
+
+def test_delete_place_review(client):
+    existing_place = Place(
+        report_count=8,
+        google_place_id="some_id",
+        name="some_name",
+        address="some_address",
+        latitude=0.1,
+        longitude=0.1,
+    )
+    db.session.add(existing_place)
+
+    existing_place_review = PlaceReview(
+        id=12,
+        google_place_id="some_id",
+        created_at="2022-12-01",
+        completed_at="2022-12-01",
+        type="GOOGLE_REVIEW",
+        do_it_for_me=False,
+    )
+    db.session.add(existing_place_review)
+
+    delete_review_payload = {
+        "id": existing_place_review.id
+    }
+
+    response = client.delete(
+        f"/place_reviews",
+        json=delete_review_payload,
+    )
+
+    assert response.status_code == 200
+
+    place_review = (
+        db.session.query(PlaceReview)
+        .filter(PlaceReview.id == existing_place_review.id)
+        .all()
+    )
+
+    assert place_review == []
+
+
+def test_delete_place_review_when_the_id_does_not_exist(client):
+
+    delete_review_payload = {
+        "id": 999
+    }
+
+    response = client.delete(
+        f"/place_reviews",
+        json=delete_review_payload,
+    )
+
+    assert response.status_code == 204

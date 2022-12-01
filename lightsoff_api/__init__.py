@@ -171,5 +171,45 @@ def create_place_review(path: PlacePath, body: PlaceReviewBody):
     }, HTTPStatus.OK
 
 
+class PlaceReviewIdBody(BaseModel):
+    id: int
+
+    class Config:
+        orm_mode = True
+
+
+class PlaceReviewIdResponse(BaseModel):
+    code: int = Field(0, description="Status Code")
+    message: str = Field("ok", description="Exception Information")
+
+
+@app.delete(
+    "/place_reviews", responses={"200": PlaceReviewIdResponse}
+)
+def delete_place_review(body: PlaceReviewIdBody):
+
+    place_review = (
+        db.session.query(PlaceReview)
+        .filter(PlaceReview.id == body.id)
+        .first()
+    )
+
+    if not place_review:
+        return {
+            "code": HTTPStatus.NO_CONTENT.value,
+            "message": HTTPStatus.NO_CONTENT.description,
+        }, HTTPStatus.NO_CONTENT
+
+    db.session.delete(place_review)
+    db.session.commit()
+
+    # TODO : Probably that the review must also be deleted on zappier ?
+
+    return {
+        "code": HTTPStatus.OK.value,
+        "message": HTTPStatus.OK.description,
+    }, HTTPStatus.OK
+
+
 if __name__ == "__main__":
     app.run()
