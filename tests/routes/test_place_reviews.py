@@ -1,4 +1,5 @@
 from lightsoff_api import db, Place, PlaceReview
+import datetime
 
 
 def test_post_place_review_with_type(client):
@@ -104,8 +105,8 @@ def test_delete_place_review(client):
     existing_place_review = PlaceReview(
         id=12,
         google_place_id="some_id",
-        created_at="2022-12-01",
-        completed_at="2022-12-01",
+        created_at=datetime.datetime.utcnow(),
+        completed_at=datetime.datetime.utcnow(),
         type="GOOGLE_REVIEW",
         do_it_for_me=False,
     )
