@@ -113,13 +113,29 @@ def test_delete_place_review(runner):
         do_it_for_me=False,
     )
     db.session.add(existing_place_review)
+    place_review_id_to_keep = 123
+    existing_place_review = PlaceReview(
+        id=place_review_id_to_keep,
+        google_place_id="some_id",
+        created_at=datetime.datetime.utcnow(),
+        completed_at=datetime.datetime.utcnow(),
+        type="GOOGLE_REVIEW",
+        do_it_for_me=False,
+    )
+    db.session.add(existing_place_review)
 
     runner.invoke(args=["delete_place_review", f"{place_review_id_to_remove}"])
 
-    place_review = (
+    place_review_with_id_to_remove = (
         db.session.query(PlaceReview)
         .filter(PlaceReview.id == place_review_id_to_remove)
         .all()
     )
+    place_review_with_id_to_keep = (
+        db.session.query(PlaceReview)
+        .filter(PlaceReview.id == place_review_id_to_keep)
+        .all()
+    )
 
-    assert place_review == []
+    assert place_review_with_id_to_remove == []
+    assert len(place_review_with_id_to_keep) == 1

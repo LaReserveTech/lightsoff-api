@@ -180,19 +180,20 @@ def delete_place_review(ids):
     if len(ids) == 0:
         logging.warning("At least on id must be specified. Usage: flask delete_place_review 1 2 3.")
 
-    for place_review_id in ids:
-        place_review = (
-            db.session.query(PlaceReview)
-            .filter(PlaceReview.id == place_review_id)
-            .first()
-        )
+    place_reviews = (
+        db.session.query(PlaceReview)
+        .filter(PlaceReview.id.in_(ids))
+        .all()
+    )
+    removed_ids = []
+    for place_review in place_reviews:
+        db.session.delete(place_review)
+        removed_ids.append(str(place_review.id))
 
-        if not place_review:
-            logging.warning(f"No place_review with id {place_review_id}.")
-        else:
-            db.session.delete(place_review)
-            db.session.commit()
-            logging.info(f"Place_review with id {place_review_id} successfully deleted.")
+    db.session.commit()
+
+    if len(place_reviews) < len(ids):
+        logging.warning(f"Some ids were not found in the database: {set(ids).difference(set(removed_ids))}.")
 
 
 if __name__ == "__main__":
