@@ -208,7 +208,7 @@ Flask-SQLAlchemy = ">=1.0"
 
 [[package]]
 name = "flask-openapi3"
-version = "2.1.1"
+version = "2.2.1"
 description = "Generate REST API and OpenAPI documentation for your Flask project."
 category = "main"
 optional = false
@@ -757,7 +757,7 @@ testing = ["flake8 (<5)", "func-timeout", "jaraco.functools", "jaraco.itertools"
 [metadata]
 lock-version = "1.1"
 python-versions = ">=3.9,<3.10"
-content-hash = "4549ddacc7132e639b4ba9bc3b7318ed9ec642c432ed21e8848f7c2d7c6a1998"
+content-hash = "e75de94455bd0b9ad43267dfa4b66f1bf5ee092b1dd89d475fae3a9027228e8a"
 
 [metadata.files]
 alembic = [
@@ -834,8 +834,8 @@ flask-migrate = [
     {file = "Flask_Migrate-3.1.0-py3-none-any.whl", hash = "sha256:a6498706241aba6be7a251078de9cf166d74307bca41a4ca3e403c9d39e2f897"},
 ]
 flask-openapi3 = [
-    {file = "flask-openapi3-2.1.1.tar.gz", hash = "sha256:e4b1ae0c21383185475e74c12f9f236a74a032c56bf2e0f4ddb1045beaf245d5"},
-    {file = "flask_openapi3-2.1.1-py3-none-any.whl", hash = "sha256:ccadc46905fb7cb58f6cd82d1ba754b104baab0d85ca234c859897099ac7d4d6"},
+    {file = "flask-openapi3-2.2.1.tar.gz", hash = "sha256:0b7d06b88706411ad81d9655beb05f147eeb7d1962db75d36b2f16a03bc9fb06"},
+    {file = "flask_openapi3-2.2.1-py3-none-any.whl", hash = "sha256:a15c41990f4c9bd18ef5090eb6afc320705e34993d7a31805173a6e73a3136e5"},
 ]
 flask-sqlalchemy = [
     {file = "Flask-SQLAlchemy-3.0.2.tar.gz", hash = "sha256:16199f5b3ddfb69e0df2f52ae4c76aedbfec823462349dabb21a1b2e0a2b65e9"},
