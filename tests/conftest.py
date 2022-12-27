@@ -13,3 +13,7 @@ def db_fixture():
 @pytest.fixture
 def client(db_fixture):
     return app.test_client()
+
+@pytest.fixture
+def runner(db_fixture):
+    return app.test_cli_runner()

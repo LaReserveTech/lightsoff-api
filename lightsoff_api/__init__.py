@@ -1,5 +1,8 @@
 import datetime
+import logging
 import os
+
+import click
 import sqlalchemy as sa
 import requests
 
@@ -169,6 +172,28 @@ def create_place_review(path: PlacePath, body: PlaceReviewBody):
         "code": HTTPStatus.OK.value,
         "message": HTTPStatus.OK.description,
     }, HTTPStatus.OK
+
+
+@app.cli.command("delete_place_review")
+@click.argument("ids", nargs=-1)
+def delete_place_review(ids):
+    if len(ids) == 0:
+        logging.warning("At least on id must be specified. Usage: flask delete_place_review 1 2 3.")
+
+    place_reviews = (
+        db.session.query(PlaceReview)
+        .filter(PlaceReview.id.in_(ids))
+        .all()
+    )
+    removed_ids = []
+    for place_review in place_reviews:
+        db.session.delete(place_review)
+        removed_ids.append(str(place_review.id))
+
+    db.session.commit()
+
+    if len(place_reviews) < len(ids):
+        logging.warning(f"Some ids were not found in the database: {set(ids).difference(set(removed_ids))}.")
 
 
 if __name__ == "__main__":

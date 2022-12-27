@@ -1,4 +1,5 @@
-from lightsoff_api import db, Place, PlaceReview, PlaceReviewType
+from lightsoff_api import db, Place, PlaceReview
+import datetime
 
 
 def test_post_place_review_with_type(client):
@@ -88,3 +89,53 @@ def test_post_place_review_with_wrong_payload(client):
 
     assert response.status_code == 422
     assert "value is not a valid enumeration member" in response.json[0]["msg"]
+
+
+def test_delete_place_review(runner):
+
+    existing_place = Place(
+        report_count=8,
+        google_place_id="some_id",
+        name="some_name",
+        address="some_address",
+        latitude=0.1,
+        longitude=0.1,
+    )
+    db.session.add(existing_place)
+
+    place_review_id_to_remove = 999
+    existing_place_review = PlaceReview(
+        id=place_review_id_to_remove,
+        google_place_id="some_id",
+        created_at=datetime.datetime.utcnow(),
+        completed_at=datetime.datetime.utcnow(),
+        type="GOOGLE_REVIEW",
+        do_it_for_me=False,
+    )
+    db.session.add(existing_place_review)
+    place_review_id_to_keep = 123
+    existing_place_review = PlaceReview(
+        id=place_review_id_to_keep,
+        google_place_id="some_id",
+        created_at=datetime.datetime.utcnow(),
+        completed_at=datetime.datetime.utcnow(),
+        type="GOOGLE_REVIEW",
+        do_it_for_me=False,
+    )
+    db.session.add(existing_place_review)
+
+    runner.invoke(args=["delete_place_review", f"{place_review_id_to_remove}"])
+
+    place_review_with_id_to_remove = (
+        db.session.query(PlaceReview)
+        .filter(PlaceReview.id == place_review_id_to_remove)
+        .all()
+    )
+    place_review_with_id_to_keep = (
+        db.session.query(PlaceReview)
+        .filter(PlaceReview.id == place_review_id_to_keep)
+        .all()
+    )
+
+    assert place_review_with_id_to_remove == []
+    assert len(place_review_with_id_to_keep) == 1
