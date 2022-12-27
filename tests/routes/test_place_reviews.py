@@ -93,7 +93,7 @@ def test_post_place_review_with_wrong_payload(client):
     assert "value is not a valid enumeration member" in response.json[0]["msg"]
 
 
-def test_delete_place_review(runner):
+def test_delete_place_review(client):
 
     existing_place = Place(
         report_count=8,
