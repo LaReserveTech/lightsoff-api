@@ -1,6 +1,8 @@
 from lightsoff_api import db, Place, PlaceReview
 import datetime
 
+from lightsoff_api.commands import delete_place_review
+
 
 def test_post_place_review_with_type(client):
     existing_place = Place(
@@ -124,7 +126,7 @@ def test_delete_place_review(runner):
     )
     db.session.add(existing_place_review)
 
-    runner.invoke(args=["delete_place_review", f"{place_review_id_to_remove}"])
+    delete_place_review(ids=[place_review_id_to_remove])
 
     place_review_with_id_to_remove = (
         db.session.query(PlaceReview)
