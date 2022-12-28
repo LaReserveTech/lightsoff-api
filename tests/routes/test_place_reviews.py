@@ -1,3 +1,4 @@
+from unittest import mock
 from lightsoff_api import db, Place, PlaceReview
 import datetime
 
@@ -93,8 +94,11 @@ def test_post_place_review_with_wrong_payload(client):
     assert "value is not a valid enumeration member" in response.json[0]["msg"]
 
 
-def test_delete_place_review(client):
-
+@mock.patch("lightsoff_api.commands.app.app_context")
+def test_delete_place_review(
+    mock_app_context,
+    db_fixture,
+):
     existing_place = Place(
         report_count=8,
         google_place_id="some_id",
