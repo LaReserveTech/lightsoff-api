@@ -1,0 +1,23 @@
+services:
+  api:
+    build: .
+    working_dir: /app
+    volumes:
+      - ./:/app
+    ports:
+      - 5000:5000
+    depends_on:
+      - database
+    entrypoint: flask run --debug
+    environment:
+      - DATABASE_URI=postgresql://lightsoff:lightsoff@database:5432/lightsoff
+      - SERVER_NAME=0.0.0.0:5000
+
+  database:
+    image: postgres:15-alpine
+    environment:
+      - POSTGRES_USER=lightsoff
+      - POSTGRES_PASSWORD=lightsoff
+      - POSTGRES_DB=lightsoff
+    ports:
+      - 5054:5432
