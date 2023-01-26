@@ -16,6 +16,9 @@ from http import HTTPStatus
 from pydantic import BaseModel, Field, root_validator
 from typing import Optional
 
+from dotenv import load_dotenv
+load_dotenv()
+
 app = OpenAPI(__name__)
 app.config["SQLALCHEMY_DATABASE_URI"] = os.environ.get("DATABASE_URI")
 
@@ -197,4 +200,8 @@ def delete_place_review(ids):
 
 
 if __name__ == "__main__":
-    app.run()
+    app.run(
+        host=os.environ.get("API_HOST"),
+        port=os.environ.get("API_PORT"),
+        debug="1" == os.environ.get("API_DEBUG", "0")
+    )
