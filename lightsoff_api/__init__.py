@@ -97,7 +97,7 @@ def create_place(body: PlaceBody):
 class PlaceReviewType(str, Enum):
     GOOGLE_REVIEW = "GOOGLE_REVIEW"
     PHONE_CALL = "PHONE_CALL"
-    TWILIO = "TWILIO"
+    SMS = "SMS"
 
 
 class PlaceReviewBody(BaseModel):
