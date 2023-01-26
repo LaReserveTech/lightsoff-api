@@ -1224,26 +1224,15 @@ files = [
 test = ["pytest (>=3.0.0)"]
 
 [[package]]
-name = "wsgi-request-logger"
-version = "0.4.6"
-description = "Apache-like combined logging for WSGI Web Applications"
-category = "main"
-optional = false
-python-versions = "*"
-files = [
-    {file = "wsgi-request-logger-0.4.6.tar.gz", hash = "sha256:445d7ec52799562f812006394d0b4a7064b37084c6ea6bd74ea7a2136c97ed83"},
-]
-
-[[package]]
 name = "zappa"
-version = "0.55.0"
+version = "0.56.1"
 description = "Server-less Python Web Services for AWS Lambda and API Gateway"
 category = "main"
 optional = false
-python-versions = ">=3.7, <3.10"
+python-versions = ">=3.7"
 files = [
-    {file = "zappa-0.55.0-py3-none-any.whl", hash = "sha256:6a57cc1099a203092a503e87e53714a02fed8bd60642eafaf8e90a73e0368a39"},
-    {file = "zappa-0.55.0.tar.gz", hash = "sha256:9771483352b14532e390fcec1f2dd97605e830c439468ed65f147ca78d53fa88"},
+    {file = "zappa-0.56.1-py3-none-any.whl", hash = "sha256:d5ee65fab4b68f9563ccb224646ddd3c99e0e516ada78ac57417137d43700205"},
+    {file = "zappa-0.56.1.tar.gz", hash = "sha256:fd35373c81b26aa95a9b11578f83a9cf71c69c1e59183f57a009d1c082b12622"},
 ]
 
 [package.dependencies]
@@ -1259,13 +1248,11 @@ python-dateutil = "*"
 python-slugify = "*"
 pyyaml = "*"
 requests = ">=2.20.0"
-six = "*"
 toml = "*"
 tqdm = "*"
 troposphere = ">=3.0"
 werkzeug = "*"
 wheel = "*"
-wsgi-request-logger = "*"
 
 [[package]]
 name = "zipp"
@@ -1286,4 +1273,4 @@ testing = ["flake8 (<5)", "func-timeout", "jaraco.functools", "jaraco.itertools"
 [metadata]
 lock-version = "2.0"
 python-versions = ">=3.9,<3.10"
-content-hash = "939250cac207d01f34ef0c7575ef2cb7526e65c9ca659d2da0316a11d9ccbc86"
+content-hash = "ad4dc1c92f468635f8feef36681e5b11f2fe31b9232c255d9910452b039873a9"
