@@ -13,7 +13,8 @@ def delete_place_review(ids):
     with app.app_context():
         if len(ids) == 0:
             logging.warning(
-                "At least on id must be specified. Usage: flask delete_place_review 1 2 3."
+                "At least on id must be specified. Usage: flask delete_place_review 1"
+                " 2 3."
             )
 
         place_reviews = (
@@ -28,5 +29,6 @@ def delete_place_review(ids):
 
         if len(place_reviews) < len(ids):
             logging.warning(
-                f"Some ids were not found in the database: {set(ids).difference(set(removed_ids))}."
+                "Some ids were not found in the database:"
+                f" {set(ids).difference(set(removed_ids))}."
             )
