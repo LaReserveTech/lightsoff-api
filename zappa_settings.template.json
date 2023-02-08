@@ -14,6 +14,8 @@
       "SubnetIds": [],
       "SecurityGroupIds": []
     },
-    "touch_path": "/openapi"
+    "touch_path": "/openapi",
+    "debug": false,
+    "cloudwatch_log_level": "INFO"
   }
 }
