@@ -14,9 +14,20 @@ permissions:
   contents: read
 
 jobs:
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: psf/black@stable
+        with:
+          options: "--check"
+          src: "."
+          version: "23.1.0"
+
   tests:
     name: "Tests"
     runs-on: ubuntu-latest
+    needs: [lint]
 
     defaults:
       run:
