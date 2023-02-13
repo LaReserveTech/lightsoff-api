@@ -179,6 +179,7 @@ def create_place_review(path: PlacePath, body: PlaceReviewBody):
         "message": HTTPStatus.OK.description,
     }, HTTPStatus.OK
 
+
 @app.post(
     "/places/<string:google_place_id>/contact", responses={"200": PlaceReviewResponse}
 )
@@ -195,7 +196,6 @@ def update_place_count_of_contact(path: PlacePath):
             "message": HTTPStatus.NOT_FOUND.description,
         }, HTTPStatus.NOT_FOUND
 
-    
     place.contacted = place.contacted + 1
 
     db.session.commit()
@@ -204,6 +204,7 @@ def update_place_count_of_contact(path: PlacePath):
         "code": HTTPStatus.OK.value,
         "message": HTTPStatus.OK.description,
     }, HTTPStatus.OK
+
 
 if __name__ == "__main__":
     app.run()
