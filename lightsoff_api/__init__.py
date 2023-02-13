@@ -179,6 +179,7 @@ def create_place_review(path: PlacePath, body: PlaceReviewBody):
         "message": HTTPStatus.OK.description,
     }, HTTPStatus.OK
 
+
 class PlaceContactResponse(BaseModel):
     code: int = Field(0, description="Status Code")
     message: str = Field("ok", description="Exception Information")
