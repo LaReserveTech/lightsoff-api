@@ -186,7 +186,7 @@ class PlaceContactResponse(BaseModel):
 
 
 @app.post(
-    "/places/<string:google_place_id>/contact", responses={"200": PlaceContactwResponse}
+    "/places/<string:google_place_id>/contact", responses={"200": PlaceContactResponse}
 )
 def update_place_count_of_contact(path: PlacePath):
     place = (
