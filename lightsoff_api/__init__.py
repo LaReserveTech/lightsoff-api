@@ -40,7 +40,7 @@ class Place(db.Model):
     report_count = sa.Column(sa.Integer, nullable=False, default=1)
     latitude = sa.Column(sa.Float, nullable=False)
     longitude = sa.Column(sa.Float, nullable=False)
-    contacted = sa.Column(sa.Integer, default=0)
+    contacted_count = sa.Column(sa.Integer, default=0)
 
 
 class PlaceReview(db.Model):
@@ -68,7 +68,6 @@ class PlaceBody(BaseModel):
     phone_number: Optional[str]
     latitude: float
     longitude: float
-    contacted: int
 
     class Config:
         orm_mode = True
@@ -186,9 +185,10 @@ class PlaceContactResponse(BaseModel):
 
 
 @app.post(
-    "/places/<string:google_place_id>/contact", responses={"200": PlaceContactResponse}
+    "/places/<string:google_place_id>/increase_contacted_count",
+    responses={"200": PlaceContactResponse},
 )
-def update_place_count_of_contact(path: PlacePath):
+def increase_place_contacted_count(path: PlacePath):
     place = (
         db.session.query(Place)
         .filter(Place.google_place_id == path.google_place_id)
@@ -201,7 +201,7 @@ def update_place_count_of_contact(path: PlacePath):
             "message": HTTPStatus.NOT_FOUND.description,
         }, HTTPStatus.NOT_FOUND
 
-    place.contacted = place.contacted + 1
+    place.contacted_count = place.contacted_count + 1
 
     db.session.commit()
 
