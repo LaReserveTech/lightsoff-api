@@ -64,7 +64,6 @@ def test_post_update_count(client):
         "phone_number": "Some number",
         "latitude": 0.1,
         "longitude": 0.2,
-        "contacted_count": 0,
     }
 
     existing_place = Place(report_count=8, **place_payload)
