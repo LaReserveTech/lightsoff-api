@@ -40,6 +40,7 @@ class Place(db.Model):
     report_count = sa.Column(sa.Integer, nullable=False, default=1)
     latitude = sa.Column(sa.Float, nullable=False)
     longitude = sa.Column(sa.Float, nullable=False)
+    contacted_count = sa.Column(sa.Integer, default=0)
 
 
 class PlaceReview(db.Model):
@@ -171,6 +172,38 @@ def create_place_review(path: PlacePath, body: PlaceReviewBody):
             requests.post(hook_url, json=payload)
         except Exception as e:
             current_app.logger.error(e)
+
+    return {
+        "code": HTTPStatus.OK.value,
+        "message": HTTPStatus.OK.description,
+    }, HTTPStatus.OK
+
+
+class PlaceContactResponse(BaseModel):
+    code: int = Field(0, description="Status Code")
+    message: str = Field("ok", description="Exception Information")
+
+
+@app.post(
+    "/places/<string:google_place_id>/increase_contacted_count",
+    responses={"200": PlaceContactResponse},
+)
+def increase_place_contacted_count(path: PlacePath):
+    place = (
+        db.session.query(Place)
+        .filter(Place.google_place_id == path.google_place_id)
+        .first()
+    )
+
+    if not place:
+        return {
+            "code": HTTPStatus.NOT_FOUND.value,
+            "message": HTTPStatus.NOT_FOUND.description,
+        }, HTTPStatus.NOT_FOUND
+
+    place.contacted_count = place.contacted_count + 1
+
+    db.session.commit()
 
     return {
         "code": HTTPStatus.OK.value,
