@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "lightsoff-api"
-version = "0.4.0"
+version = "0.6.1"
 description = "The API used by lightsoff website"
 authors = ["Alexandre Papin <alexandre.papin@indaclouds.fr>"]
 

@@ -204,7 +204,7 @@ def increase_place_contacted_count(path: PlacePath):
     if not place.contacted_count:
         place.contacted_count = 1
     else:
-        place.contacted_count = place.contacted_count + 1
+        place.contacted_count += 1
 
     db.session.commit()
 
