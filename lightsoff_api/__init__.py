@@ -202,7 +202,7 @@ def increase_place_contacted_count(path: PlacePath):
         }, HTTPStatus.NOT_FOUND
 
     if not place.contacted_count:
-        place.contacted_count = 0
+        place.contacted_count = 1
     else:
         place.contacted_count = place.contacted_count + 1
 
