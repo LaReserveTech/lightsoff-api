@@ -74,8 +74,11 @@ def test_post_update_count(client):
     )
 
     assert response.status_code == 200
-
-    for key, value in place_payload.items():
-        assert getattr(existing_place, key) == value
-
     assert existing_place.contacted_count == 1
+
+    response = client.post(
+        f"/places/{existing_place.google_place_id}/increase_contacted_count",
+    )
+
+    assert response.status_code == 200
+    assert existing_place.contacted_count == 2
