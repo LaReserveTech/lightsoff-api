@@ -16,6 +16,7 @@
     },
     "touch_path": "/openapi",
     "debug": false,
+    "log_level": "INFO",
     "cloudwatch_log_level": "INFO"
   }
 }
