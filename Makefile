@@ -1,15 +1,25 @@
-.PHONY: all install update uninstall
+.PHONY: start stop clean run_migrations create_migration run_tests
 
-all:
-	@docker compose run --rm --entrypoint '' api flask db upgrade
+start:
+	@docker compose up --build --detach --remove-orphans
 
-install:
-	@docker compose up --detach --remove-orphans
+stop:
+	@docker compose stop
 
-update:
-	@docker compose pull
-	@docker compose up --force-recreate --build --detach
+watch:
+	@docker compose logs --tail 100 --follow
 
-uninstall:
+clean:
 	@docker compose stop
 	@docker compose rm --volumes --force
+
+run_migrations:
+	@docker compose run -d database
+	@docker compose run --rm --entrypoint '' api flask db upgrade
+
+create_migration: run_migrations
+	@docker compose run --rm --entrypoint '' api flask db migrate -m "Reword me"
+
+run_tests:
+	@docker compose run -d database
+	@docker compose run -e DATABASE_NAME=lightsoff_test --rm --entrypoint '' api pytest

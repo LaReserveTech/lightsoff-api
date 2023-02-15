@@ -12,6 +12,24 @@
 Copy environment file: `cp .env.template .env`
 
 ```console
-make
-make install
+make start
+make run_migrations
 ```
+
+Go to http://localhost:5000/openapi/
+
+## Running tests
+
+```console
+make run_tests
+```
+
+## Generating a migration file
+
+```console
+make create_migration
+```
+
+## Deployment
+
+This is handled by [Zappa](https://github.com/zappa/Zappa) in the `zappa.yml` github workflow
