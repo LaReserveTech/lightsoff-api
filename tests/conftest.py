@@ -7,6 +7,7 @@ def db_fixture():
     with app.app_context():
         db.create_all()
         yield db
+        db.session.close()
         db.drop_all()
 
 

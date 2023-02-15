@@ -13,6 +13,10 @@ from flask_openapi3 import OpenAPI, Server
 from flask_sqlalchemy import SQLAlchemy
 from pydantic import BaseModel, Field, root_validator
 
+from dotenv import load_dotenv
+
+load_dotenv()
+
 servers = (
     [
         Server(url=f"/{os.environ.get('STAGE')}"),
@@ -22,6 +26,15 @@ servers = (
 )
 app = OpenAPI(__name__, servers=servers)
 app.config["SQLALCHEMY_DATABASE_URI"] = os.environ.get("DATABASE_URI")
+
+if os.environ.get("DATABASE_NAME"):
+    app.config["SQLALCHEMY_DATABASE_URI"] = (
+        app.config["SQLALCHEMY_DATABASE_URI"].removesuffix(
+            app.config["SQLALCHEMY_DATABASE_URI"].split("/")[-1],
+        )
+        + os.environ["DATABASE_NAME"]
+    )
+
 
 CORS(app, origins=os.environ.get("CORS_ALLOWED_ORIGINS", "").split(","))
 db = SQLAlchemy(app)
@@ -215,4 +228,8 @@ def increase_place_contacted_count(path: PlacePath):
 
 
 if __name__ == "__main__":
-    app.run()
+    app.run(
+        host=os.environ.get("FLASK_HOST"),
+        port=os.environ.get("FLASK_PORT"),
+        debug=os.environ.get("FLASK_DEBUG"),
+    )

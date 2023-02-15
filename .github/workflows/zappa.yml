@@ -27,11 +27,31 @@ jobs:
   tests:
     name: "Tests"
     runs-on: ubuntu-latest
+    container: python:3.9
     needs: [lint]
 
     defaults:
       run:
-        shell: bash
+        shell:
+          bash
+          #
+
+    services:
+      # Label used to access the service container
+      postgres:
+        # Docker Hub image
+        image: postgres:15-alpine
+        # Provide the password for postgres
+        env:
+          POSTGRES_USER: lightsoff
+          POSTGRES_PASSWORD: lightsoff
+          POSTGRES_DB: lightsoff
+        # Set health checks to wait until postgres has started
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
 
     steps:
       - name: Checkout
@@ -46,7 +66,7 @@ jobs:
         run: |
           curl -sSL https://install.python-poetry.org | python3 -
           poetry install
-          poetry run pytest
+          DATABASE_URI=postgresql://lightsoff:lightsoff@postgres:5432/lightsoff poetry run pytest
 
   zappa-staging:
     name: "Zappa Staging"
@@ -71,7 +91,7 @@ jobs:
       - name: Zappa deploy
         run: |
           curl -sSL https://install.python-poetry.org | python3 -
-          poetry install --no-dev --no-root
+          poetry install --no-dev --no-root --with=zappa
           cp zappa_settings.template.json zappa_settings.json
           echo $(jq '.ENVIRONMENT.s3_bucket = "${{ secrets.S3_BUCKET }}"' zappa_settings.json) > zappa_settings.json
           echo $(jq '.ENVIRONMENT.aws_environment_variables.DATABASE_URI = "${{ secrets.DATABASE_URI }}"' zappa_settings.json) > zappa_settings.json
@@ -107,7 +127,7 @@ jobs:
       - name: Zappa deploy
         run: |
           curl -sSL https://install.python-poetry.org | python3 -
-          poetry install --no-dev --no-root
+          poetry install --no-dev --no-root --with=zappa
           cp zappa_settings.template.json zappa_settings.json
           echo $(jq '.ENVIRONMENT.s3_bucket = "${{ secrets.S3_BUCKET }}"' zappa_settings.json) > zappa_settings.json
           echo $(jq '.ENVIRONMENT.aws_environment_variables.DATABASE_URI = "${{ secrets.DATABASE_URI }}"' zappa_settings.json) > zappa_settings.json
