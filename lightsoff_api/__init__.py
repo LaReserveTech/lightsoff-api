@@ -201,7 +201,10 @@ def increase_place_contacted_count(path: PlacePath):
             "message": HTTPStatus.NOT_FOUND.description,
         }, HTTPStatus.NOT_FOUND
 
-    place.contacted_count = place.contacted_count + 1
+    if not place.contacted_count:
+        place.contacted_count = 0
+    else:
+        place.contacted_count = place.contacted_count + 1
 
     db.session.commit()
 
