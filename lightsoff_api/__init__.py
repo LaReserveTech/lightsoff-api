@@ -216,7 +216,7 @@ def increase_place_contacted_count(path: PlacePath):
 
 @app.get(
     "places/<string:google_place_id>",
-        responses={"200": PlaceContactResponse},
+    responses={"200": PlaceContactResponse},
 )
 def place_content(path: PlacePath):
     place = (
@@ -234,7 +234,7 @@ def place_content(path: PlacePath):
     return {
         "code": HTTPStatus.OK.value,
         "message": HTTPStatus.OK.description,
-        "data": place
+        "data": place,
     }, HTTPStatus.OK
 
 
