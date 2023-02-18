@@ -214,5 +214,29 @@ def increase_place_contacted_count(path: PlacePath):
     }, HTTPStatus.OK
 
 
+@app.get(
+    "/places/<string:google_place_id>",
+    responses={"200": PlaceContactResponse},
+)
+def place_content(path: PlacePath):
+    place = (
+        db.session.query(Place)
+        .filter(Place.google_place_id == path.google_place_id)
+        .first()
+    )
+
+    if not place:
+        return {
+            "code": HTTPStatus.NOT_FOUND.value,
+            "message": HTTPStatus.NOT_FOUND.description,
+        }, HTTPStatus.NOT_FOUND
+
+    return {
+        "code": HTTPStatus.OK.value,
+        "message": HTTPStatus.OK.description,
+        "data": place,
+    }, HTTPStatus.OK
+
+
 if __name__ == "__main__":
     app.run()
