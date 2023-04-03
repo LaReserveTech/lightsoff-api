@@ -297,14 +297,14 @@ Flask-SQLAlchemy = ">=1.0"
 
 [[package]]
 name = "flask-openapi3"
-version = "2.3.1"
+version = "2.3.2"
 description = "Generate REST API and OpenAPI documentation for your Flask project."
 category = "main"
 optional = false
 python-versions = ">=3.7"
 files = [
-    {file = "flask-openapi3-2.3.1.tar.gz", hash = "sha256:6880517720a3581241612c46a92ef8e927342ff1dbfd408fda19f85ef53a30d0"},
-    {file = "flask_openapi3-2.3.1-py3-none-any.whl", hash = "sha256:b21eca353dd422e1ee21a941a10a0eabbf4107c78827528a9c09d7d2f03d1bd8"},
+    {file = "flask-openapi3-2.3.2.tar.gz", hash = "sha256:430d0701e498189c651997bb1720504244d5b79385f828d7385e940c79d4c6ac"},
+    {file = "flask_openapi3-2.3.2-py3-none-any.whl", hash = "sha256:1853f287919cfe6dca881c3a4d28fbfadab18832c77db481673daa01fe0c3988"},
 ]
 
 [package.dependencies]
@@ -1272,4 +1272,4 @@ testing = ["flake8 (<5)", "func-timeout", "jaraco.functools", "jaraco.itertools"
 [metadata]
 lock-version = "2.0"
 python-versions = ">=3.9,<3.10"
-content-hash = "5e9764cb3f78069a232ae9a00fff6862a84acf04a6836ec9c7ead4d7e850150e"
+content-hash = "e5323ab9119ad936d370343e98f829fccac41f2eaaa809eb181fe3d443b23737"
